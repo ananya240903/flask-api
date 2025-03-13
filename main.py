@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 app = FastAPI()
 
 # Load dataset from GitHub
-df = pd.read_csv("https://raw.githubusercontent.com/ananya240903/flask-api/main/signal_db3.csv")  # Replace with your GitHub link
+df = pd.read_csv("https://raw.githubusercontent.com/ananya240903/flask-api/refs/heads/main/signal%20db3.csv")  # Replace with your GitHub link
 
 df.columns = df.columns.str.strip()
 le_sim = LabelEncoder()
