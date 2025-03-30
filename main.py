@@ -55,6 +55,9 @@ def log_query(user_query: str, matched_sim: str = ""):
         writer = csv.writer(f)
         writer.writerow([datetime.now(), user_query, matched_sim])
 
+def clean_text(text: str) -> str:
+    return re.sub(r'[^\w\s]', '', text.strip().lower())
+
 # --------------------------- ROUTES ---------------------------
 
 @app.get("/")
@@ -87,9 +90,8 @@ def suggest_better_location(request: LocationRequest):
 
 @app.post("/send_query")
 def send_query(request: QueryRequest):
-    # Clean and lowercase query, remove punctuation
-    query = re.sub(r'[^\w\s]', '', request.query.lower())
-    known_sims = [sim.lower() for sim in le_sim.classes_]
+    query = clean_text(request.query)
+    known_sims = [clean_text(sim) for sim in le_sim.classes_]
 
     matched_sim = None
     for sim in known_sims:
