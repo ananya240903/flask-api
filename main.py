@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from datetime import datetime
 import csv
+import re
 
 app = FastAPI()
 
@@ -86,7 +87,8 @@ def suggest_better_location(request: LocationRequest):
 
 @app.post("/send_query")
 def send_query(request: QueryRequest):
-    query = request.query.lower()
+    # Clean and lowercase query, remove punctuation
+    query = re.sub(r'[^\w\s]', '', request.query.lower())
     known_sims = [sim.lower() for sim in le_sim.classes_]
 
     matched_sim = None
@@ -95,7 +97,7 @@ def send_query(request: QueryRequest):
             matched_sim = sim
             break
 
-    log_query(query, matched_sim or "none")
+    log_query(request.query, matched_sim or "none")
 
     if matched_sim:
         return {"response": f"The best location for {matched_sim.capitalize()} is being fetched now."}
